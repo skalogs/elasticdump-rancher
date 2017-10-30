@@ -2,7 +2,7 @@ FROM taskrabbit/elasticsearch-dump:v3.3.1
 
 ADD startup.sh /usr/bin/startup.sh
 
-RUN apk add --update bash && \
+RUN apk add --update bash curl && \
     rm -rf /var/cache/apk/*
 
 ENV SERVICE_ELASTICSEARCH_HOST elasticsearch
