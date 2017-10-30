@@ -23,4 +23,4 @@ checkElasticsearch
 
 echo "Restoring elasticsearch dump"
 curl ${RANCHER_BASEURL}/self/service/metadata/elasticdump > /tmp/elasticdump.json
-/usr/lib/node_modules/elasticdump/bin/elasticdump --input=/tmp/elasticdump.json --output=${ES_URL}
+/usr/lib/node_modules/elasticdump/bin/elasticdump --input=/tmp/elasticdump.json --output=${ES_URL}/${TARGET_INDEX}
