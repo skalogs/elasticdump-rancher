@@ -1,7 +1,5 @@
-FROM alpine:3.6
+FROM taskrabbit/elasticsearch-dump:v3.3.1
 
-RUN apk --update add bash nodejs nodejs-npm
-ENV ELASTICDUMP_VERSION 3.3.1
-RUN npm install -g elasticdump@${ELASTICDUMP_VERSION}
+ADD startup.sh /usr/bin/startup.sh
 
-CMD ["/usr/bin/elasticdump"]
+ENTRYPOINT ["/usr/bin/startup.sh"]
