@@ -29,6 +29,6 @@ if [ ! -z "${DEFAULT_INDEX_PATTERN}" ]; then
     curl http://${ES_AUTH}${SERVICE_KIBANA_HOST}:${SERVICE_KIBANA_PORT}/api/kibana/settings/defaultIndex \
 	    -H "Content-Type: application/json" \
 	    -H "kbn-xsrf: anything" \
-	    --data-binary '{"value":"${DEFAULT_INDEX_PATTERN}"}' \
+	    --data-binary '{"value":"'${DEFAULT_INDEX_PATTERN}'"}' \
 	    --compressed
 fi
