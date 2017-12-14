@@ -26,5 +26,5 @@ curl ${RANCHER_BASEURL}/self/service/metadata/elasticdump > /tmp/elasticdump.jso
 /usr/lib/node_modules/elasticdump/bin/elasticdump --input=/tmp/elasticdump.json --output=${ES_URL}/${TARGET_INDEX} --headers='{"Content-Type": "application/json"}' ${ELASTICDUMP_OPTS}
 
 if [ ! -z "${DEFAULT_INDEX_PATTERN}" ]; then
-curl -XPUT "${ES_URL}/.kibana/config/${ELASTICSEARCH_VERSION}" -d "{\"defaultIndex\": \"${DEFAULT_INDEX_PATTERN}\"}"
+curl -XPUT "${ES_URL}/.kibana/config/${ELASTICSEARCH_VERSION}" -d "{\"defaultIndex\": \"${DEFAULT_INDEX_PATTERN}\"}" -H "Content-Type: application/json" 
 fi
