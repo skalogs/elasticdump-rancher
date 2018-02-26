@@ -1,4 +1,4 @@
-FROM taskrabbit/elasticsearch-dump:v3.3.1
+FROM alpine:3.7
 
 ADD startup.sh /usr/bin/startup.sh
 
@@ -11,7 +11,5 @@ ENV SERVICE_ELASTICSEARCH_USERNAME ""
 ENV SERVICE_ELASTICSEARCH_PASSWORD ""
 ENV SERVICE_KIBANA_HOST kibana
 ENV SERVICE_KIBANA_PORT 5601
-ENV ELASTICDUMP_OPTS ""
-ENV TARGET_INDEX ".kibana"
 
 ENTRYPOINT ["/usr/bin/startup.sh"]
