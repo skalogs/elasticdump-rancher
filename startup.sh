@@ -17,7 +17,8 @@ function checkElasticsearch {
     while  [ $status -ne 200 ] ;
     do
         status=$(eval $curlCommand)
-        sleep 1
+        echo "I'm waiting Elasticsearch"
+	sleep 5
     done
 }
 
@@ -27,21 +28,32 @@ function checkKibana {
     while  [ $status -ne 200 ] ;
     do
         status=$(eval $curlCommand)
-        sleep 1
+	echo "I'm waiting Kibana"
+        sleep 5
     done
 }
 
 checkElasticsearch
 checkKibana
 
-echo "Restoring elasticsearch dump"
-curl ${RANCHER_BASEURL}/self/service/metadata/elasticdump > /tmp/elasticdump.json
-/usr/lib/node_modules/elasticdump/bin/elasticdump --input=/tmp/elasticdump.json --output=${ES_URL}/${TARGET_INDEX} --headers='{"Content-Type": "application/json"}' ${ELASTICDUMP_OPTS}
+INDEX_PATTERN=$(curl --silent ${RANCHER_BASEURL}/self/service/metadata/elasticdump)
 
-if [ ! -z "${DEFAULT_INDEX_PATTERN}" ]; then
-    curl ${KIBANA_URL}/api/kibana/settings/defaultIndex \
-	    -H "Content-Type: application/json" \
-	    -H "kbn-xsrf: anything" \
-	    --data-binary '{"value":"'${DEFAULT_INDEX_PATTERN}'"}' \
-	    --compressed
+if [ ! -z "${INDEX_PATTERN}" ]; then
+    while read INDEX TIME_FIELD ; do
+        echo "Create index pattern"
+        curl -f -XPOST "$KIBANA_URL/api/saved_objects/index-pattern/$INDEX" \
+             -H "Content-Type: application/json" \
+             -H "kbn-xsrf: anything" \
+             --data-binary "{\"attributes\":{\"title\":\"$INDEX\",\"timeFieldName\":\"$TIME_FIELD\"}}" \
+             --compressed
+    done <<< "$INDEX_PATTERN"
+
+    if [ ! -z "${DEFAULT_INDEX_PATTERN}" ]; then
+        echo "Setting default index pattern"
+        curl ${KIBANA_URL}/api/kibana/settings/defaultIndex \
+	         -H "Content-Type: application/json" \
+	         -H "kbn-xsrf: anything" \
+	         --data-binary '{"value":"'${DEFAULT_INDEX_PATTERN}'"}' \
+	         --compressed
+    fi
 fi
